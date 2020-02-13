@@ -29,7 +29,7 @@ public class Leg : MonoBehaviour
         if (!planted) {
             if (Time.frameCount - timeMoving < 10) {
                 progress = (float) Time.frameCount - timeMoving;
-                rend.SetPosition(1, Vector3.Lerp(startPosition, rend.GetPosition(0) + 2 * Player.instance.direction + 0.5f * Vector3.down, progress / 10f));
+                rend.SetPosition(1, Vector3.Lerp(startPosition, rend.GetPosition(0) + 2 * transform.forward + 1f * Vector3.down, progress / 10f));
             } else {
                 planted = true;
             }

@@ -16,7 +16,10 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        for (int i = 0; i < 10; i ++)
+        {
+            Instantiate(PrefabManager.instance.Npc);
+        }
     }
 
     // Update is called once per frame
@@ -43,3 +46,9 @@ public class GameManager : MonoBehaviour
 // particles
 // treehouses
 // fun = having no power to having lots of power
+
+// the sims - no predefined goal, emergent gameplay (desire to build something and explore experiences)
+// portal - puzzles based on something that breaks the laws of physics (desire to explore this strange thing)
+// lieve oma - recreating an experience and all the little things that are real and not cliche models
+// choplifter - rescue people, have empathy for hostages, pride when saving them.
+

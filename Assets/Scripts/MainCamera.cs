@@ -17,6 +17,6 @@ public class MainCamera : MonoBehaviour
     void Update()
     {
         pos.Set(Player.instance.transform.position.x, 10, Player.instance.transform.position.z - 30);
-        transform.position = Vector3.MoveTowards(transform.position, pos, 0.1f);
+        transform.position = Vector3.MoveTowards(transform.position, pos, 0.15f);
     }
 }

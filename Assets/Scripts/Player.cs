@@ -6,13 +6,13 @@ public class Player : MonoBehaviour
 {
     public static Player instance;
     public float VeloInfluence = 0.3f;
-    public Leg LeftLeg;
-    public Leg RightLeg;
-    private Leg ActiveLeg;
-    private Leg InactiveLeg;
     private float velocity = 0.2f;
     public Vector3 direction;
     private Vector3 desiredDirection;
+    bool up;
+    bool down;
+    bool left;
+    bool right;
 
     private void Awake()
     {
@@ -22,8 +22,6 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ActiveLeg = RightLeg;
-        InactiveLeg = LeftLeg;
     }
 
     // Update is called once per frame
@@ -37,53 +35,49 @@ public class Player : MonoBehaviour
         transform.LookAt(transform.position + direction);
 
         // move in direction of keys
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey("a") || Input.GetKey(KeyCode.RightArrow) || Input.GetKey("d") ||
-        Input.GetKey(KeyCode.UpArrow) || Input.GetKey("w") || Input.GetKey(KeyCode.DownArrow) || Input.GetKey("s")) {
+        if (up || down || left || right) {
             transform.Translate(desiredDirection * velocity, Space.World);
         }
 
-        // set legs to hips
-        LeftLeg.rend.SetPosition(0, transform.position + 0.5f * Vector3.left);
-        RightLeg.rend.SetPosition(0, transform.position + 0.5f * Vector3.right);
-
-        // take step
-        if (ActiveLeg.planted && InactiveLeg.planted && Vector3.Distance(transform.position, ActiveLeg.rend.GetPosition(1)) > 2)
-        {
-            TakeStep(ActiveLeg);
-            if (ActiveLeg == RightLeg) {
-                ActiveLeg = LeftLeg;
-                InactiveLeg = RightLeg;
-            } else {
-                ActiveLeg = RightLeg;
-                InactiveLeg = LeftLeg;
-            }
-        }
-    }
-
-    void TakeStep(Leg leg)
-    {
-        leg.planted = false;
-        leg.timeMoving = Time.frameCount;
-        leg.startPosition = leg.rend.GetPosition(1);
     }
 
     Vector3 ArrowKeys()
     {
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey("a"))
-        {
-            desiredDirection += Vector3.left;
-        }
-        if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey("d"))
-        {
-            desiredDirection += Vector3.right;
-        }
-        if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey("w"))
+        // 1 a
+        // 2
+        // 3 y
+        // 4
+        // 5 // r bumper
+        // 6 // select
+        // 7 //start
+        // 8 left stick
+        // 9 right stickclick
+        // 10
+        // 11
+        // 15
+
+        float dhaxis = Input.GetAxis("XboxDpadHorizontal");
+        float dvaxis = Input.GetAxis("XboxDpadVertical");
+        up = Input.GetKey(KeyCode.UpArrow) || Input.GetKey("w") || dvaxis < 0;
+        down = Input.GetKey(KeyCode.DownArrow) || Input.GetKey("s") || dvaxis > 0;
+        left = Input.GetKey(KeyCode.LeftArrow) || Input.GetKey("a") || dhaxis < 0;
+        right = Input.GetKey(KeyCode.RightArrow) || Input.GetKey("d") || dhaxis > 0;
+
+        if (up)
         {
             desiredDirection += Vector3.forward;
         }
-        if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey("s"))
+        if (down)
         {
             desiredDirection += Vector3.back;
+        }
+        if (left)
+        {
+            desiredDirection += Vector3.left;
+        }
+        if (right)
+        {
+            desiredDirection += Vector3.right;
         }
         desiredDirection = Vector3.Normalize(desiredDirection);
         return desiredDirection;
