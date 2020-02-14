@@ -7,21 +7,23 @@ public class Npc : MonoBehaviour
     private Vector3 pos;
     private Vector3 circling;
     private Vector3 direction;
-    private float speed;
+    private float velocity;
+    private CharacterController controller;
     public string State = "none";
+
 
     // Start is called before the first frame update
     void Start()
     {
         pos = transform.position;
-        speed = Random.value / 10f;
+        velocity = Random.value / 10f;
+        controller = GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        direction = Player.instance.transform.position - transform.position;
-        if (Time.frameCount % Mathf.Floor(speed * 10000f) > 150) {
+        if (Time.frameCount % Mathf.Floor(velocity * 10000f) > 150) {
             State = "circle";
         } else {
             State = "follow";
@@ -37,6 +39,11 @@ public class Npc : MonoBehaviour
         } else if (State == "follow") {
             transform.LookAt(Player.instance.transform.position);
         }
-        transform.position += speed * transform.forward;
+        direction.x = transform.forward.x;
+        direction.z = transform.forward.z;
+        // gravity
+        direction.y += -2 * Time.deltaTime;
+
+        controller.Move(direction * velocity);
     }
 }

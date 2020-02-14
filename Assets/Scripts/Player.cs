@@ -7,8 +7,10 @@ public class Player : MonoBehaviour
     public static Player instance;
     public float VeloInfluence = 0.3f;
     private float velocity = 0.2f;
-    public Vector3 direction;
-    private Vector3 desiredDirection;
+    private Vector3 realDir;
+    private Vector3 realDirXZ;
+    private Vector3 slowDir;
+    private CharacterController controller;
     bool up;
     bool down;
     bool left;
@@ -22,23 +24,26 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        controller = GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        desiredDirection = ArrowKeys();
+        realDir = ArrowKeys();
 
-        direction = Vector3.RotateTowards(direction, desiredDirection, 0.3f, 0.1f);
+        // facing slowDir has a delay
+        realDirXZ.Set(realDir.x, 0, realDir.z);
+        slowDir = Vector3.RotateTowards(slowDir, realDirXZ, 0.1f, 0.1f);
+        transform.LookAt(transform.position + slowDir);
 
-        // facing direction has a delay
-        transform.LookAt(transform.position + direction);
+        // gravity
+        realDir.y += -2 * Time.deltaTime;
 
         // move in direction of keys
         if (up || down || left || right) {
-            transform.Translate(desiredDirection * velocity, Space.World);
+            controller.Move(realDir * velocity);
         }
-
     }
 
     Vector3 ArrowKeys()
@@ -55,7 +60,6 @@ public class Player : MonoBehaviour
         // 10
         // 11
         // 15
-
         float dhaxis = Input.GetAxis("XboxDpadHorizontal");
         float dvaxis = Input.GetAxis("XboxDpadVertical");
         up = Input.GetKey(KeyCode.UpArrow) || Input.GetKey("w") || dvaxis < 0;
@@ -63,23 +67,23 @@ public class Player : MonoBehaviour
         left = Input.GetKey(KeyCode.LeftArrow) || Input.GetKey("a") || dhaxis < 0;
         right = Input.GetKey(KeyCode.RightArrow) || Input.GetKey("d") || dhaxis > 0;
 
-        if (up)
-        {
-            desiredDirection += Vector3.forward;
+        if (up || down || left || right) {
+            realDir.x = 0;
+            realDir.z = 0;
+            if (up) {
+                realDir += Vector3.forward;
+            }
+            if (down) {
+                realDir += Vector3.back;
+            }
+            if (left) {
+                realDir += Vector3.left;
+            }
+            if (right) {
+                realDir += Vector3.right;
+            }
         }
-        if (down)
-        {
-            desiredDirection += Vector3.back;
-        }
-        if (left)
-        {
-            desiredDirection += Vector3.left;
-        }
-        if (right)
-        {
-            desiredDirection += Vector3.right;
-        }
-        desiredDirection = Vector3.Normalize(desiredDirection);
-        return desiredDirection;
+
+        return realDir;
     }
 }

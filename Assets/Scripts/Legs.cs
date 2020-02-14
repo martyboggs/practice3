@@ -12,12 +12,13 @@ public class Legs : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        LeftLeg = Instantiate(PrefabManager.instance.Leg);
-        RightLeg = Instantiate(PrefabManager.instance.Leg);
-        LeftLeg.transform.parent = transform;
-        RightLeg.transform.parent = transform;
+        LeftLeg = Instantiate(PrefabManager.instance.Leg, transform);
+        RightLeg = Instantiate(PrefabManager.instance.Leg, transform);
         ActiveLeg = RightLeg;
         InactiveLeg = LeftLeg;
+
+        LeftLeg.rend.SetPosition(1, transform.position);
+        RightLeg.rend.SetPosition(1, transform.position);
     }
 
     // Update is called once per frame

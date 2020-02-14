@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6214839922384413040}
   - component: {fileID: 6214839922384413041}
   m_Layer: 0
-  m_Name: LeftLeg
+  m_Name: Leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -154,5 +154,4 @@ MonoBehaviour:
   timeMoving: 0
   startPosition: {x: 0, y: 0, z: 0}
   endPosition: {x: 0, y: 0, z: 0}
-  ElbowPoint: {x: 0, y: 0, z: 0}
-  rend: {fileID: 0}
+  rend: {fileID: 6214839922384413040}

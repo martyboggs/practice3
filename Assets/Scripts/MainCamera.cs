@@ -16,7 +16,11 @@ public class MainCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        pos.Set(Player.instance.transform.position.x, 10, Player.instance.transform.position.z - 30);
+        pos.Set(
+            Player.instance.transform.position.x,
+            Player.instance.transform.position.y + 10,
+            Player.instance.transform.position.z - 30
+        );
         transform.position = Vector3.MoveTowards(transform.position, pos, 0.15f);
     }
 }

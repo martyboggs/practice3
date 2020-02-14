@@ -16,9 +16,12 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < 10; i ++)
+        Npc npc;
+        Vector3 pos = new Vector3();
+        for (int i = 0; i < 100; i ++)
         {
-            Instantiate(PrefabManager.instance.Npc);
+            pos.Set(Random.value * 100, 1, Random.value * 100);
+            npc = Instantiate(PrefabManager.instance.Npc, pos, Quaternion.identity, transform);
         }
     }
 

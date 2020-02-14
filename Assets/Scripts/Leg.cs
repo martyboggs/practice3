@@ -8,10 +8,9 @@ public class Leg : MonoBehaviour
     public int timeMoving;
     public Vector3 startPosition;
     public Vector3 endPosition;
-    public Vector3 ElbowPoint;
+    [HideInInspector]
     public LineRenderer rend;
     private float progress;
-
 
     // Start is called before the first frame update
     void Start()
@@ -22,10 +21,6 @@ public class Leg : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // if (Vector3.distance(transform.position, EndPosition) < 0.2f)
-        // {
-        // }
-
         if (!planted) {
             if (Time.frameCount - timeMoving < 10) {
                 progress = (float) Time.frameCount - timeMoving;
