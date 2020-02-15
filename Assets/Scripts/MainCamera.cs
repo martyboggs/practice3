@@ -16,11 +16,6 @@ public class MainCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // close 0.05
-        // far 0.2
-        // distance 30 - 60
-        Debug.Log(Vector3.Distance(transform.position - offset, Player.instance.transform.position));
-
         transform.position = Vector3.MoveTowards(
             transform.position, Player.instance.transform.position + offset,
             Vector3.Distance(transform.position - offset, Player.instance.transform.position) / 50f
