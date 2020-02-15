@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MainCamera : MonoBehaviour
 {
-    private Vector3 pos;
+    private Vector3 offset = new Vector3(0, 10, -30);
 
     // Start is called before the first frame update
     void Start()
@@ -16,11 +16,14 @@ public class MainCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        pos.Set(
-            Player.instance.transform.position.x,
-            Player.instance.transform.position.y + 10,
-            Player.instance.transform.position.z - 30
+        // close 0.05
+        // far 0.2
+        // distance 30 - 60
+        Debug.Log(Vector3.Distance(transform.position - offset, Player.instance.transform.position));
+
+        transform.position = Vector3.MoveTowards(
+            transform.position, Player.instance.transform.position + offset,
+            Vector3.Distance(transform.position - offset, Player.instance.transform.position) / 50f
         );
-        transform.position = Vector3.MoveTowards(transform.position, pos, 0.15f);
     }
 }
