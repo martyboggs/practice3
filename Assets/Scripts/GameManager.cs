@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
 // particles
 // treehouses
 // fun = having no power to having lots of power
+// npc says "hey i got you a burrito" player knocks it on the ground
 
 // the sims - no predefined goal, emergent gameplay (desire to build something and explore experiences)
 // portal - puzzles based on something that breaks the laws of physics (desire to explore this strange thing)

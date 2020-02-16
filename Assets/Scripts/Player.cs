@@ -6,6 +6,8 @@ public class Player : MonoBehaviour
 {
     public static Player instance;
     public float VeloInfluence = 0.3f;
+    [HideInInspector]
+    public string State = "none";
     private float velocity = 0.2f;
     private Vector3 realDir;
     private Vector3 realDirXZ;
@@ -30,10 +32,9 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        realDir = ArrowKeys();
+        realDirXZ = ArrowKeys();
 
         // facing slowDir has a delay
-        realDirXZ.Set(realDir.x, 0, realDir.z);
         slowDir = Vector3.RotateTowards(slowDir, realDirXZ, 0.1f, 0.1f);
         transform.LookAt(transform.position + slowDir);
 
@@ -41,8 +42,14 @@ public class Player : MonoBehaviour
         realDir.y += -2 * Time.deltaTime;
 
         // move in direction of keys
-        if (up || down || left || right) {
-            controller.Move(realDir * velocity);
+        if (State == "none") {
+            if (up || down || left || right) {
+                realDir.x = realDirXZ.x;
+                realDir.z = realDirXZ.z;
+                controller.Move(realDir * velocity);
+            }
+        } else if (State == "talking") {
+
         }
     }
 
@@ -68,22 +75,21 @@ public class Player : MonoBehaviour
         right = Input.GetKey(KeyCode.RightArrow) || Input.GetKey("d") || dhaxis > 0;
 
         if (up || down || left || right) {
-            realDir.x = 0;
-            realDir.z = 0;
+            realDirXZ.Set(0, 0, 0);
             if (up) {
-                realDir += Vector3.forward;
+                realDirXZ += Vector3.forward;
             }
             if (down) {
-                realDir += Vector3.back;
+                realDirXZ += Vector3.back;
             }
             if (left) {
-                realDir += Vector3.left;
+                realDirXZ += Vector3.left;
             }
             if (right) {
-                realDir += Vector3.right;
+                realDirXZ += Vector3.right;
             }
         }
 
-        return realDir;
+        return Vector3.Normalize(realDirXZ);
     }
 }
