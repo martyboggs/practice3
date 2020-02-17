@@ -2,13 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// fix gravity
+// fix foot placement
+// add juice
+// what do i want to demonstrate?
+//    job pickig apples... game sucks... price of stuff in store is too high
+//    sell to people, don't get caught, put in packages, market the product
+
 public class Player : MonoBehaviour
 {
     public static Player instance;
     public float VeloInfluence = 0.3f;
     [HideInInspector]
     public string State = "none";
-    private float velocity = 0.2f;
+    private float velocity = 15f;
     private Vector3 realDir;
     private Vector3 realDirXZ;
     private Vector3 slowDir;
@@ -46,7 +53,7 @@ public class Player : MonoBehaviour
             if (up || down || left || right) {
                 realDir.x = realDirXZ.x;
                 realDir.z = realDirXZ.z;
-                controller.Move(realDir * velocity);
+                controller.Move(realDir * velocity * Time.deltaTime);
             }
         } else if (State == "talking") {
 

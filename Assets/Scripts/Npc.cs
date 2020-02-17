@@ -16,7 +16,7 @@ public class Npc : MonoBehaviour
     void Start()
     {
         pos = transform.position;
-        velocity = Random.value / 10f;
+        velocity = Random.value * 5 + 5;
         controller = GetComponent<CharacterController>();
     }
 
@@ -44,6 +44,6 @@ public class Npc : MonoBehaviour
         // gravity
         direction.y += -2 * Time.deltaTime;
 
-        controller.Move(direction * velocity);
+        controller.Move(direction * velocity * Time.deltaTime);
     }
 }

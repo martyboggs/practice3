@@ -18,7 +18,7 @@ public class MainCamera : MonoBehaviour
     {
         transform.position = Vector3.MoveTowards(
             transform.position, Player.instance.transform.position + offset,
-            Vector3.Distance(transform.position - offset, Player.instance.transform.position) / 50f
+            Vector3.Distance(transform.position - offset, Player.instance.transform.position) * 1.5f * Time.deltaTime
         );
     }
 }

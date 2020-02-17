@@ -11,6 +11,8 @@ public class Leg : MonoBehaviour
     [HideInInspector]
     public LineRenderer rend;
     private float progress;
+    private Vector3 nextStepXZ;
+    public float nextStepY;
 
     // Start is called before the first frame update
     void Start()
@@ -21,10 +23,13 @@ public class Leg : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // high hill, height - 5.5 - player.height
         if (!planted) {
             if (Time.frameCount - timeMoving < 10) {
                 progress = (float) Time.frameCount - timeMoving;
-                rend.SetPosition(1, Vector3.Lerp(startPosition, rend.GetPosition(0) + 2 * transform.forward + 1f * Vector3.down, progress / 10f));
+                nextStepXZ = rend.GetPosition(0) + 2 * transform.forward;
+                nextStepXZ.y = nextStepY;
+                rend.SetPosition(1, Vector3.Lerp(startPosition, nextStepXZ, progress / 10f));
             } else {
                 planted = true;
             }

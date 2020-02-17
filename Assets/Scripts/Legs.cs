@@ -47,5 +47,6 @@ public class Legs : MonoBehaviour
         leg.planted = false;
         leg.timeMoving = Time.frameCount;
         leg.startPosition = leg.rend.GetPosition(1);
+        leg.nextStepY = Terrain.activeTerrain.SampleHeight(leg.rend.GetPosition(0) + 2 * transform.forward) - 5;
     }
 }
