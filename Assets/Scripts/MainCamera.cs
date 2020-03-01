@@ -6,6 +6,12 @@ using UnityEngine;
 public class MainCamera : MonoBehaviour
 {
     private Vector3 offset = new Vector3(0, 10, -30);
+    public static MainCamera instance;
+
+    void Awake()
+    {
+        instance = this;
+    }
 
     // Start is called before the first frame update
     void Start()

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// fix gravity
 // fix foot placement
 // add juice
 // what do i want to demonstrate?
@@ -15,6 +14,8 @@ public class Player : MonoBehaviour
     public float VeloInfluence = 0.3f;
     [HideInInspector]
     public string State = "none";
+    [HideInInspector]
+    public GameObject TalkingTo;
     private float velocity = 15f;
     private Vector3 realDir;
     private Vector3 realDirXZ;
@@ -45,7 +46,6 @@ public class Player : MonoBehaviour
         slowDir = Vector3.RotateTowards(slowDir, realDirXZ, 0.1f, 0.1f);
         transform.LookAt(transform.position + slowDir);
 
-        // gravity
         realDir.y += -2 * Time.deltaTime;
 
         // move in direction of keys
@@ -58,6 +58,47 @@ public class Player : MonoBehaviour
         } else if (State == "talking") {
 
         }
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        Debug.Log(hit.collider.gameObject);
+
+        if (!TalkingTo && hit.collider.gameObject.tag == "Npc") {
+            TalkingTo = hit.collider.gameObject;
+            Npc npc = TalkingTo.GetComponent<Npc>();
+            npc.State = "talking";
+            State = "talking";
+            Physics.autoSimulation = false;
+            Speech.instance.Talk(npc);
+            Speech.instance.gameObject.SetActive(true);
+            Speech.instance.transform.position = TalkingTo.transform.position + 10 * Vector3.up;
+        }
+
+
+        Rigidbody body = hit.collider.attachedRigidbody;
+
+        // no rigidbody
+        if (body == null || body.isKinematic)
+        {
+            return;
+        }
+
+        // We dont want to push objects below us
+        if (hit.moveDirection.y < -0.3)
+        {
+            return;
+        }
+
+        // Calculate push direction from move direction,
+        // we only push objects to the sides never up and down
+        Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
+
+        // If you know how fast your character is trying to move,
+        // then you can also multiply the push velocity by that.
+
+        // Apply the push
+        body.velocity = pushDir * 20.0f;
     }
 
     Vector3 ArrowKeys()
