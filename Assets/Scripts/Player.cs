@@ -21,10 +21,13 @@ public class Player : MonoBehaviour
     private Vector3 realDirXZ;
     private Vector3 slowDir;
     private CharacterController controller;
+    private bool jumping = false;
+    int talkTime = 0;
     bool up;
     bool down;
     bool left;
     bool right;
+    private Vector3 forward;
 
     private void Awake()
     {
@@ -40,31 +43,33 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        realDirXZ = ArrowKeys();
-
-        // facing slowDir has a delay
-        slowDir = Vector3.RotateTowards(slowDir, realDirXZ, 0.1f, 0.1f);
-        transform.LookAt(transform.position + slowDir);
-
-        realDir.y += -2 * Time.deltaTime;
-
         // move in direction of keys
         if (State == "none") {
-            if (up || down || left || right) {
-                realDir.x = realDirXZ.x;
-                realDir.z = realDirXZ.z;
-                controller.Move(realDir * velocity * Time.deltaTime);
+            realDirXZ = ArrowKeys();
+            // jump
+            if (!jumping && Input.GetKeyUp(KeyCode.Space)) {
+                jumping = true;
+                realDir.y = 3;
             }
+            // facing slowDir has a delay
+            slowDir = Vector3.RotateTowards(slowDir, realDirXZ, 0.1f, 0.1f);
+            transform.LookAt(transform.position + slowDir);
         } else if (State == "talking") {
-
+            realDirXZ = Vector3.zero;
         }
+
+        // gravity
+        realDir.y += -9.8f * Time.deltaTime;
+
+        realDir.x = realDirXZ.x;
+        realDir.z = realDirXZ.z;
+        controller.Move(realDir * velocity * Time.deltaTime);
     }
 
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        Debug.Log(hit.collider.gameObject);
-
-        if (!TalkingTo && hit.collider.gameObject.tag == "Npc") {
+        if (Time.frameCount > talkTime && !TalkingTo && hit.collider.gameObject.tag == "Npc") {
+            talkTime = Time.frameCount + 300;
             TalkingTo = hit.collider.gameObject;
             Npc npc = TalkingTo.GetComponent<Npc>();
             npc.State = "talking";
@@ -75,6 +80,10 @@ public class Player : MonoBehaviour
             Speech.instance.transform.position = TalkingTo.transform.position + 10 * Vector3.up;
         }
 
+        if (hit.collider.gameObject.tag == "Terrain") {
+            realDir.y = 0;
+            jumping = false;
+        }
 
         Rigidbody body = hit.collider.attachedRigidbody;
 
@@ -84,7 +93,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        // We dont want to push objects below us
+        // We don't want to push objects below us
         if (hit.moveDirection.y < -0.3)
         {
             return;
@@ -98,7 +107,7 @@ public class Player : MonoBehaviour
         // then you can also multiply the push velocity by that.
 
         // Apply the push
-        body.velocity = pushDir * 20.0f;
+        body.velocity = pushDir * 10.0f;
     }
 
     Vector3 ArrowKeys()
@@ -122,21 +131,25 @@ public class Player : MonoBehaviour
         left = Input.GetKey(KeyCode.LeftArrow) || Input.GetKey("a") || dhaxis < 0;
         right = Input.GetKey(KeyCode.RightArrow) || Input.GetKey("d") || dhaxis > 0;
 
+        realDirXZ.x = 0;
+        realDirXZ.z = 0;
         if (up || down || left || right) {
-            realDirXZ.Set(0, 0, 0);
+            // unit vector from camera to player
+            forward = Player.instance.transform.position - MainCamera.instance.transform.position;
             if (up) {
-                realDirXZ += Vector3.forward;
+                realDirXZ += forward;
             }
             if (down) {
-                realDirXZ += Vector3.back;
+                realDirXZ += Quaternion.Euler(0, 180, 0) * forward;
             }
             if (left) {
-                realDirXZ += Vector3.left;
+                realDirXZ += Quaternion.Euler(0, -90, 0) * forward;
             }
             if (right) {
-                realDirXZ += Vector3.right;
+                realDirXZ += Quaternion.Euler(0, 90, 0) * forward;
             }
         }
+        realDirXZ.y = 0;
 
         return Vector3.Normalize(realDirXZ);
     }

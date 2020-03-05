@@ -49,6 +49,7 @@ public class Speech : MonoBehaviour
             if (Input.GetKeyUp(KeyCode.Return)) {
                 convIndex++;
                 charIndex = 1;
+                text.text = "";
                 if (convIndex < conv.Count) {
                     State = "blurbing";
                 } else {
@@ -57,7 +58,6 @@ public class Speech : MonoBehaviour
                     Player.instance.State = "none";
                     Player.instance.TalkingTo = null;
                     TalkingTo.State = "none";
-                    text.text = "";
                     Physics.autoSimulation = true;
                 }
             }

@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Physics.gravity = new Vector3(0, -98, 0);
+
         Npc npc;
         Vector3 pos = new Vector3();
         for (int i = 0; i < 100; i += 1)

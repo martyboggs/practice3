@@ -45,8 +45,9 @@ public class Npc : MonoBehaviour
 
         direction.x = transform.forward.x;
         direction.z = transform.forward.z;
+
         // gravity
-        direction.y += -2 * Time.deltaTime;
+        direction.y += -9.8f * Time.deltaTime;
 
         if (State != "talking") {
             controller.Move(direction * velocity * Time.deltaTime);
